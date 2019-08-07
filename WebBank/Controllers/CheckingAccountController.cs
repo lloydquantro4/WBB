@@ -21,14 +21,18 @@ namespace WebBank.Controllers
         // GET: CheckingAccount/Details by user
         public ActionResult Details()
         {
+            if (User.Identity.Name == "admin@webbank.com")
+            {
+                return RedirectToAction("AllAccounts");
+            }
             var userId = User.Identity.GetUserId();
             var checkingAccount = db.CheckingAccounts.Where(c => c.ApplicationUserId == userId).First();
-            return View();
+            return View(checkingAccount);
         }
 
         //GET: checkingAccount details for a specific user
         [Authorize(Roles ="Admin")]
-        public ActionResult DetailsForAdmin(int id)
+        public ActionResult DetailsForAdmin(string id)
         {
             var checkingAccount = db.CheckingAccounts.Find(id);
             return View("Details",checkingAccount);

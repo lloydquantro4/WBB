@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using WebBank.Models;
+using WebBank.Services;
 
 namespace WebBank.Controllers
 {
@@ -155,19 +156,13 @@ namespace WebBank.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    //Adding a claim
+
                     UserManager.AddClaim(user.Id, new Claim(ClaimTypes.GivenName, model.FirstName));//adding claims(by GivenNames)
-                    var db = new ApplicationDbContext();
-                    var accountNum = (123456 + db.CheckingAccounts.Count()).ToString().PadLeft(10,'0');
-                    var checkingAccountNew = new CheckingAccount { FirstName = model.FirstName, LastName = model.LastName, AccountNumber = accountNum, Balance = 0, ApplicationUserId = user.Id };
-                    db.CheckingAccounts.Add(checkingAccountNew);
-                    db.SaveChanges();
+                    var service = new CheckingAccountService(HttpContext.GetOwinContext().Get<ApplicationDbContext>());
+                    service.CreateCheckingAccount(model.FirstName, model.LastName, user.Id, 0);
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
                     return RedirectToAction("Index", "Home");
                 }

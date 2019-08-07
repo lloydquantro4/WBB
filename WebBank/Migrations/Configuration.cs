@@ -7,6 +7,7 @@ namespace WebBank.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
     using WebBank.Models;
+    using WebBank.Services;
 
     internal sealed class Configuration : DbMigrationsConfiguration<WebBank.Models.ApplicationDbContext>
     {
@@ -18,23 +19,17 @@ namespace WebBank.Migrations
 
         protected override void Seed(WebBank.Models.ApplicationDbContext context)
         {
-            //  This method will be called after migrating to the latest version.
-
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data.
+            //called after every migration
             var userStore = new UserStore<ApplicationUser>(context);
             var userManager = new ApplicationUserManager(userStore);
              if(!context.Users.Any(t => t.UserName == "admin@webbank.com"))
             {
-                var user = new ApplicationUser {UserName = "admin@webbank.com", Email = "admin@webbank.com", Id = "myadmin" };
+                var user = new ApplicationUser {UserName = "admin@webbank.com", Email = "admin@webbank.com" };
                 userManager.Create(user, "Admin123!");
-            
+
                 //add user to checking accounts
-                var db = new ApplicationDbContext();
-                var accountNum = (123456 + db.CheckingAccounts.Count()).ToString().PadLeft(10, '0');
-                var checkingAccountNew = new CheckingAccount { FirstName = "Admin", LastName = "User", AccountNumber = accountNum, Balance = 1000, ApplicationUserId = user.Id };
-                db.CheckingAccounts.Add(checkingAccountNew);
-                db.SaveChanges();
+                var service = new CheckingAccountService(context);
+                service.CreateCheckingAccount("admin", "user", user.Id, 1000);
 
                 context.Roles.AddOrUpdate(r => r.Name, new IdentityRole { Name = "Admin" });
                 context.SaveChanges();

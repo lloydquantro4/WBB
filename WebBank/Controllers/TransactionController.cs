@@ -12,8 +12,9 @@ namespace WebBank.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         // GET: Transaction
-        public ActionResult Deposit(int CheckingAccountId)
+        public ActionResult Deposit()
         {
+           
             return View();
         }
         [HttpPost]

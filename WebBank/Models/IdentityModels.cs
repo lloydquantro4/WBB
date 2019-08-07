@@ -16,6 +16,7 @@ namespace WebBank.Models
             // Add custom user claims here
             return userIdentity;
         }
+        //I can add more user properties here
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
@@ -31,6 +32,6 @@ namespace WebBank.Models
         }
         public DbSet<CheckingAccount> CheckingAccounts { get; set; }
 
-        public System.Data.Entity.DbSet<WebBank.Models.Transaction> Transactions { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
     }
 }
