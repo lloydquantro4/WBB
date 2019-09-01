@@ -14,6 +14,7 @@ namespace WebBank.Models
         [DataType(DataType.Currency)]
         public decimal Amount { get; set; }
 
+
         [Required]
         public int CheckingAccountId { get; set; }
         public virtual CheckingAccount CheckingAccount { get; set; }

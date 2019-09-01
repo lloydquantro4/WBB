@@ -156,7 +156,7 @@ namespace WebBank.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    //Adding a claim
+                    //Adding a claim & add to details to db details for user.
 
                     UserManager.AddClaim(user.Id, new Claim(ClaimTypes.GivenName, model.FirstName));//adding claims(by GivenNames)
                     var service = new CheckingAccountService(HttpContext.GetOwinContext().Get<ApplicationDbContext>());

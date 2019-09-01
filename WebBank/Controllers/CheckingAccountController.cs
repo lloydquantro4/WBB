@@ -44,7 +44,7 @@ namespace WebBank.Controllers
             return View(db.CheckingAccounts.ToList());
         }
 
-        // GET: CheckingAccount/Create
+        [Authorize(Roles = "Admin")]// GET: CheckingAccount/Create
         public ActionResult Create()
         {
             return View();
@@ -52,20 +52,19 @@ namespace WebBank.Controllers
 
         // POST: CheckingAccount/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(CheckingAccount checkingAccount)
         {
-            try
-            {
-                // TODO: Add insert logic here
+            if(ModelState.IsValid){
 
+                db.CheckingAccounts.Add(checkingAccount);
+                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
-        }
 
+            return View();
+
+        }
+        //Have 2 edits one for personal info and one for the admin
         // GET: CheckingAccount/Edit/5
         public ActionResult Edit(int id)
         {
@@ -73,6 +72,7 @@ namespace WebBank.Controllers
         }
 
         // POST: CheckingAccount/Edit/5
+        //
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
         {

@@ -16,7 +16,7 @@ namespace WebBank.Controllers
         public ActionResult Index()
         {
             var userId = User.Identity.GetUserId();
-            var checkingAccountId = db.CheckingAccounts.Where(c => c.ApplicationUserId == userId);
+            var checkingAccountId = db.CheckingAccounts.Where(c => c.ApplicationUserId == userId).First().Id;
             ViewBag.CheckingAccountId = checkingAccountId;
             return View();
         }

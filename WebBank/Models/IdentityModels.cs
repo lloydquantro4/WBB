@@ -25,7 +25,7 @@ namespace WebBank.Models
             : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
-
+        //I could also make a dbcontext class
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
